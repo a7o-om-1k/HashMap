@@ -7,6 +7,8 @@ public class MyHashMap<k,v> implements MyMapInterface
     //create Node
     Node[] table = new Node[DEFAULT_INITIAL_CAPACITY];
 
+    private int size = 0;
+
     static class Node implements MyMapInterface.Entry
     {
         int hash;   //hash
@@ -36,12 +38,12 @@ public class MyHashMap<k,v> implements MyMapInterface
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmty() {
-        return false;
+        return size ==0;
     }
 
     @Override
@@ -49,8 +51,35 @@ public class MyHashMap<k,v> implements MyMapInterface
         return null;
     }
 
+    //get HashCode and place where store
+    public int hash(Object key)
+    {
+        int h;
+        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+    }
+
+    //get past positions
+    public int indexFor(int hashValue, int length)
+    {
+        return hashValue % length;
+    }
+
+
+
     @Override
-    public Object put(Object key, Object value) {
+    public Object put(Object key, Object value)
+    {
+        //calculate hash
+        int hashValue = hash(key);
+        //place where been
+        int i = indexFor(hashValue,table.length);
+        // if i have data and same key - > overwrite!
+        for (Node node = table[i]; node != null; node = node.next)
+        {
+            if (node.key.equals(key) && hashValue == node.hash) return node.value;
+        }
         return null;
     }
+
+
 }
